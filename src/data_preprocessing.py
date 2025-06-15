@@ -5,8 +5,28 @@ from sklearn.compose import ColumnTransformer
 import pandas as pd
 import joblib
 import os
+import yaml
 
 logger = get_logger(__name__)
+
+
+def load_params(params_path:str):
+    try:
+        with open(params_path,'r') as f:
+            params = yaml.safe_load(f)
+        logger.info(f'Parameter retrieved from {params_path}')
+        return params
+    
+    except FileNotFoundError:
+        logger.error('File not found: %s', params_path)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error: %s', e)
+        raise
+
 
 def make_derieved_features(df:pd.DataFrame):
     try:
@@ -18,7 +38,7 @@ def make_derieved_features(df:pd.DataFrame):
         raise
 
 
-def preprocess_and_split(df:pd.DataFrame,target_col:str,save_dir:str):
+def preprocess_and_split(df:pd.DataFrame,target_col:str,test_size:float,save_dir:str):
     try:
         os.makedirs(save_dir,exist_ok=True)
         le = LabelEncoder()
@@ -27,7 +47,7 @@ def preprocess_and_split(df:pd.DataFrame,target_col:str,save_dir:str):
         X = df.drop(columns=[target_col])
         y = df[target_col]
 
-        X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+        X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size,random_state=42)
 
         num_cols = X.select_dtypes(include='number').columns.to_list()
         cat_cols = X.select_dtypes(include=['object']).columns.to_list()
@@ -85,10 +105,14 @@ def save_preprocessed_data(X_train,X_test,y_train,y_test,destination_path:str):
 
 def main():
     try:
+        params = load_params(params_path='./config/params.yaml')
+        test_size = params['data_preprocessing']['test_size']
+
         df = pd.read_csv('C:/Users/akhde/OneDrive/Desktop/MLOps/Loan-Fraud-Detection/local_S3/data/raw/raw_data.csv')
 
+
         featured_df = make_derieved_features(df)
-        X_train,X_test,y_train,y_test = preprocess_and_split(featured_df,'Personality','./local_S3/models')
+        X_train,X_test,y_train,y_test = preprocess_and_split(featured_df,'Personality',test_size,'./local_S3/models')
         save_preprocessed_data(X_train,X_test,y_train,y_test,destination_path='./local_S3/data/')
         logger.info('Data Preprocessing Completed')
     

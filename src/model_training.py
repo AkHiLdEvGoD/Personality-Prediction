@@ -3,8 +3,26 @@ import pandas as pd
 import os
 import pickle
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+import yaml
 
 logger = get_logger(__name__)
+
+def load_params(params_path:str):
+    try:
+        with open(params_path,'r') as f:
+            params = yaml.safe_load(f)
+        logger.info(f'Parameter retrieved from {params_path}')
+        return params
+    except FileNotFoundError:
+        logger.error('File not found: %s', params_path)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error: %s', e)
+        raise
 
 def load_data(train_path):
     try:
@@ -17,9 +35,21 @@ def load_data(train_path):
         logger.error(f"Error loading training data: {e}")
         raise
 
-def train_model(X, y):
+def train_model(X,y,params):
     try:
-        model = LogisticRegression(C=0.01,penalty = 'l1',solver = 'liblinear')
+        model_type = params['model_training']['model_type']
+
+        if model_type == 'logistic_regression':
+            model_params = params['model_training']['logistic_regression']
+            model = LogisticRegression(**model_params)
+        
+        elif model_type == "svc":
+            model_params = params['model_training']["svc"]
+            model = SVC(**model_params)
+
+        else:
+            raise ValueError(f"Unsupported model_type: {model_type}")
+
         model.fit(X, y)
         logger.info("Model training completed")
         return model
@@ -40,8 +70,9 @@ def save_model(model,save_path:str):
 
 def main():
     try:
+        params = load_params('./config/params.yaml')
         X, y = load_data('./local_S3/data/processed/train.csv')
-        model = train_model(X, y)
+        model = train_model(X,y,params)
         save_model(model, './local_S3/models')
         logger.info('Model training done and model saved')
     except Exception as e:

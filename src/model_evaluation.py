@@ -7,11 +7,28 @@ import dagshub
 import os
 import json
 import pandas as pd
+import yaml
 
 logger = get_logger(__name__)
 
 mlflow.set_tracking_uri("https://dagshub.com/AkHiLdEvGoD/Personality-Prediction.mlflow")
 dagshub.init(repo_owner='AkHiLdEvGoD', repo_name='Personality-Prediction', mlflow=True)
+
+def load_params(params_path:str):
+    try:
+        with open(params_path,'r') as f:
+            params = yaml.safe_load(f)
+        logger.info(f'Parameter retrieved from {params_path}')
+        return params
+    except FileNotFoundError:
+        logger.error('File not found: %s', params_path)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error: %s', e)
+        raise
 
 def load_model(model_path:str):
     try:
@@ -96,6 +113,7 @@ def main():
     mlflow.set_experiment('dvc_pipeline')
     with mlflow.start_run() as run:
         try:
+            params = load_params('./config/params.yaml')
             model = load_model('./local_S3/models/trained_model.pkl')
             df = load_data('./local_S3/data/processed/test.csv')
 
@@ -105,12 +123,15 @@ def main():
 
             mlflow.log_metrics(metrics)
             
+            model_type = params['model_training']['model_type']
+            mlflow.log_param('Model_type',model_type)
+
             if hasattr(model,'get_params'):
                 params = model.get_params()
                 for param_name, param_value in params.items():
                     mlflow.log_param(param_name, param_value)
             
-            mlflow.sklearn.log_model(model,'logistic_regression')
+            mlflow.sklearn.log_model(model,f'{model_type}')
 
             mlflow.log_artifact('./local_S3/metrics/metrics.json')
 
