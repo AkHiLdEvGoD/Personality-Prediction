@@ -131,7 +131,7 @@ def main():
                 for param_name, param_value in params.items():
                     mlflow.log_param(param_name, param_value)
             
-            mlflow.sklearn.log_model(model,f'{model_type}')
+            mlflow.sklearn.log_model(model,'model')
 
             mlflow.log_artifact('./local_S3/metrics/metrics.json')
 
