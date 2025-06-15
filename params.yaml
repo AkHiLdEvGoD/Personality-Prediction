@@ -2,7 +2,7 @@ data_preprocessing:
   test_size : 0.15
 
 model_training:
-  model_type : logistic_regression
+  model_type : svc
   logistic_regression:
     C: 0.01
     penalty: l1

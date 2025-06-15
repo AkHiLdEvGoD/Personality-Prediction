@@ -113,7 +113,7 @@ def main():
     mlflow.set_experiment('dvc_pipeline')
     with mlflow.start_run() as run:
         try:
-            params = load_params('./config/params.yaml')
+            params = load_params('./params.yaml')
             model = load_model('./local_S3/models/trained_model.pkl')
             df = load_data('./local_S3/data/processed/test.csv')
 

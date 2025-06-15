@@ -24,7 +24,7 @@ stages:
     cmd : python -m src.model_training
     deps:
       - src/model_training.py
-      - local_S3/processed/train.csv
+      - local_S3/data/processed/train.csv
     params:
       - model_training.model_type
       - model_training.logistic_regression.C
@@ -48,7 +48,7 @@ stages:
       - local_S3/model_info/model_info.json
   
   model_registy:
-    cmd: python -m src.model_registy
+    cmd: python -m src.model_registry
     deps :
-      - src/model_registy.py
+      - src/model_registry.py
       - local_S3/model_info/model_info.json

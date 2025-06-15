@@ -1,4 +1,4 @@
 [core]
-    remote = mylocal
-['remote "mylocal"']
-    url = ../local_S3
+    remote = local_remote
+['remote "local_remote"']
+    url = ../dvc_local_remote

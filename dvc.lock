@@ -1,0 +1,112 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python -m src.data_ingestion
+    deps:
+    - path: data/raw/personality_dataset.csv
+      hash: md5
+      md5: 5b21f8093f51da0db4ee40fe567ab53a
+      size: 107234
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: fa0d2ce45b9f7ff24bc8070bd90f6b44
+      size: 2330
+    outs:
+    - path: local_S3/data/raw/
+      hash: md5
+      md5: 04ac6569b9e21bcea22247531fa67a03.dir
+      size: 96281
+      nfiles: 1
+  data_preprocessing:
+    cmd: python -m src.data_preprocessing
+    deps:
+    - path: local_S3/data/raw/raw_data.csv
+      hash: md5
+      md5: 0960bb7e14c0927c6edab4251c2509be
+      size: 96281
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: e7e763a283c4144d2ba9038ccfd3a0c2
+      size: 4820
+    params:
+      params.yaml:
+        data_preprocessing.test_size: 0.15
+    outs:
+    - path: local_S3/data/processed/test.csv
+      hash: md5
+      md5: 602732159b47aac92735ed856a7e2856
+      size: 48320
+    - path: local_S3/data/processed/train.csv
+      hash: md5
+      md5: 31f6dff19978a9ec4ec73c9ae14b282c
+      size: 273964
+    - path: local_S3/models/label_encoder.pkl
+      hash: md5
+      md5: 23b05ede426c61da52bd115d06bc4ab4
+      size: 496
+    - path: local_S3/models/preprocessing_pipeline.pkl
+      hash: md5
+      md5: 00cfa26994350459ea7d5e67ae615590
+      size: 3250
+  model_training:
+    cmd: python -m src.model_training
+    deps:
+    - path: local_S3/data/processed/train.csv
+      hash: md5
+      md5: 31f6dff19978a9ec4ec73c9ae14b282c
+      size: 273964
+    - path: src/model_training.py
+      hash: md5
+      md5: 28c625bbf4e0f77592e17bd217b4a0c5
+      size: 2600
+    params:
+      params.yaml:
+        model_training.logistic_regression.C: 0.01
+        model_training.logistic_regression.penalty: l1
+        model_training.logistic_regression.solver: liblinear
+        model_training.model_type: svc
+        model_training.svc.C: 0.01
+        model_training.svc.kernel: rbf
+    outs:
+    - path: local_S3/models/trained_model.pkl
+      hash: md5
+      md5: dc66ae91d86fecff1236b8ea04ae6e36
+      size: 65989
+  model_evaluation:
+    cmd: python -m src.model_evaluation
+    deps:
+    - path: local_S3/data/processed/test.csv
+      hash: md5
+      md5: 602732159b47aac92735ed856a7e2856
+      size: 48320
+    - path: local_S3/models/trained_model.pkl
+      hash: md5
+      md5: dc66ae91d86fecff1236b8ea04ae6e36
+      size: 65989
+    - path: src/model_evaluation.py
+      hash: md5
+      md5: 08a98289b3b2db978ffffa4b701ecfa3
+      size: 4791
+    params:
+      params.yaml:
+        model_training.model_type: svc
+    outs:
+    - path: local_S3/metrics/metrics.json
+      hash: md5
+      md5: 544f771fdbf2c17c58e10a06c6105c26
+      size: 150
+    - path: local_S3/model_info/model_info.json
+      hash: md5
+      md5: 8e254bbbf287f647815e0184d761832d
+      size: 94
+  model_registy:
+    cmd: python -m src.model_registry
+    deps:
+    - path: local_S3/model_info/model_info.json
+      hash: md5
+      md5: 8e254bbbf287f647815e0184d761832d
+      size: 94
+    - path: src/model_registry.py
+      hash: md5
+      md5: 4ecd50255128fe31b5fc8e3dfb3e2dc9
+      size: 1932

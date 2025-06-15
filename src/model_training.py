@@ -70,7 +70,7 @@ def save_model(model,save_path:str):
 
 def main():
     try:
-        params = load_params('./config/params.yaml')
+        params = load_params('./params.yaml')
         X, y = load_data('./local_S3/data/processed/train.csv')
         model = train_model(X,y,params)
         save_model(model, './local_S3/models')

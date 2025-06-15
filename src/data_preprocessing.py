@@ -105,7 +105,7 @@ def save_preprocessed_data(X_train,X_test,y_train,y_test,destination_path:str):
 
 def main():
     try:
-        params = load_params(params_path='./config/params.yaml')
+        params = load_params(params_path='./params.yaml')
         test_size = params['data_preprocessing']['test_size']
 
         df = pd.read_csv('C:/Users/akhde/OneDrive/Desktop/MLOps/Loan-Fraud-Detection/local_S3/data/raw/raw_data.csv')
