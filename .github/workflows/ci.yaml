@@ -37,13 +37,14 @@ jobs:
               DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
               DAGSHUB_TOKEN: ${{ secrets.PERSONALITY_TEST }}
             run: |
+              dvc remote add origin https://dagshub.com/AkHiLdEvGoD/Personality-Prediction.dvc
               dvc remote modify origin --local auth basic
               dvc remote modify origin --local user $DAGSHUB_USERNAME
               dvc remote modify origin --local password $DAGSHUB_TOKEN
-              dvc pull  # <-- This is what fetches the data from your DagsHub
 
           - name: run pipeline
             env:
               PERSONALITY_TEST: ${{ secrets.PERSONALITY_TEST }}
             run: |
+              dvc pull  
               dvc repro
