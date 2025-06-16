@@ -55,7 +55,7 @@ def save_data(df:pd.DataFrame,destination_path:str):
 
 def main():
     try:
-        df = load_data('C:/Users/akhde/OneDrive/Desktop/MLOps/Loan-Fraud-Detection/data/raw/personality_dataset.csv')
+        df = load_data('./data/raw/personality_dataset.csv')
         final_df = preprocessing(df)
         save_data(final_df,destination_path='./local_S3/data')
         logger.info('Data Ingestion Completed')
