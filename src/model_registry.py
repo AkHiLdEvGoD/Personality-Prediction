@@ -59,7 +59,7 @@ def register_model(model_name: str, model_info: dict):
 
 def main():
     try:
-        model_info_path = './local_S3/model_info/model_info.json'
+        model_info_path = './local_Storage/model_info/model_info.json'
         model_info = load_model_info(model_info_path)
         
         model_name = "my_model"

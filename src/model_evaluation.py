@@ -147,9 +147,9 @@ def main():
             
             mlflow.sklearn.log_model(model,'model')
 
-            mlflow.log_artifact('./local_S3/metrics/metrics.json')
+            mlflow.log_artifact('./local_Storage/metrics/metrics.json')
 
-            save_model_info(run.info.run_id,'./local_S3/models','./local_S3/model_info')
+            save_model_info(run.info.run_id,'./local_Storage/models','./local_Storage/model_info')
             
             logger.info('Model Evaluation logged and Completed')
 

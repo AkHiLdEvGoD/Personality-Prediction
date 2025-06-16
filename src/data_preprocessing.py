@@ -112,8 +112,8 @@ def main():
 
 
         featured_df = make_derieved_features(df)
-        X_train,X_test,y_train,y_test = preprocess_and_split(featured_df,'Personality',test_size,'./local_S3/models')
-        save_preprocessed_data(X_train,X_test,y_train,y_test,destination_path='./local_S3/data/')
+        X_train,X_test,y_train,y_test = preprocess_and_split(featured_df,'Personality',test_size,'./local_Storage/models')
+        save_preprocessed_data(X_train,X_test,y_train,y_test,destination_path='./local_Storage/data/')
         logger.info('Data Preprocessing Completed')
     
     except Exception as e:
