@@ -195,4 +195,4 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 dvc_local_remote/
-local_S3/
+local_Storage/

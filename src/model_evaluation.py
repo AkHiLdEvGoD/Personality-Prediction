@@ -11,21 +11,21 @@ import yaml
 
 logger = get_logger(__name__)
 
-# mlflow.set_tracking_uri("https://dagshub.com/AkHiLdEvGoD/Personality-Prediction.mlflow")
-# dagshub.init(repo_owner='AkHiLdEvGoD', repo_name='Personality-Prediction', mlflow=True)
+mlflow.set_tracking_uri("https://dagshub.com/AkHiLdEvGoD/Personality-Prediction.mlflow")
+dagshub.init(repo_owner='AkHiLdEvGoD', repo_name='Personality-Prediction', mlflow=True)
 
-dagshub_token = os.getenv("PERSONALITY_TEST")
-if not dagshub_token:
-    raise EnvironmentError("PERSONALITY_TEST environment variable is not set")
+# dagshub_token = os.getenv("PERSONALITY_TEST")
+# if not dagshub_token:
+#     raise EnvironmentError("PERSONALITY_TEST environment variable is not set")
 
-os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+# os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+# os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-dagshub_url = "https://dagshub.com"
-repo_owner = "AkHiLdEvGoD"
-repo_name = "Personality-Prediction"
+# dagshub_url = "https://dagshub.com"
+# repo_owner = "AkHiLdEvGoD"
+# repo_name = "Personality-Prediction"
 
-mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+# mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 
 
 def load_params(params_path:str):
@@ -128,12 +128,12 @@ def main():
     with mlflow.start_run() as run:
         try:
             params = load_params('./params.yaml')
-            model = load_model('./local_S3/models/trained_model.pkl')
-            df = load_data('./local_S3/data/processed/test.csv')
+            model = load_model('./local_Storage/models/trained_model.pkl')
+            df = load_data('./local_Storage/data/processed/test.csv')
 
             metrics = evaluate_model(model,df)
 
-            save_metrics(metrics,'./local_S3/metrics')
+            save_metrics(metrics,'./local_Storage/metrics')
 
             mlflow.log_metrics(metrics)
             

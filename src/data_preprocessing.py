@@ -108,7 +108,7 @@ def main():
         params = load_params(params_path='./params.yaml')
         test_size = params['data_preprocessing']['test_size']
 
-        df = pd.read_csv('./local_S3/data/raw/raw_data.csv')
+        df = pd.read_csv('./local_Storage/data/raw/raw_data.csv')
 
 
         featured_df = make_derieved_features(df)

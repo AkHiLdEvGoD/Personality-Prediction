@@ -3,28 +3,27 @@ stages:
     cmd : python -m src.data_ingestion
     deps : 
       - src/data_ingestion.py
-      - data/raw/personality_dataset.csv
     outs :
-      - local_S3/data/raw/
+      - local_Storage/data/raw/
 
   data_preprocessing:
     cmd : python -m src.data_preprocessing
     deps:
       - src/data_preprocessing.py
-      - local_S3/data/raw/raw_data.csv
+      - local_Storage/data/raw/raw_data.csv
     params:
       - data_preprocessing.test_size
     outs:
-      - local_S3/data/processed/train.csv
-      - local_S3/data/processed/test.csv
-      - local_S3/models/preprocessing_pipeline.pkl
-      - local_S3/models/label_encoder.pkl
+      - local_Storage/data/processed/train.csv
+      - local_Storage/data/processed/test.csv
+      - local_Storage/models/preprocessing_pipeline.pkl
+      - local_Storage/models/label_encoder.pkl
   
   model_training:
     cmd : python -m src.model_training
     deps:
       - src/model_training.py
-      - local_S3/data/processed/train.csv
+      - local_Storage/data/processed/train.csv
     params:
       - model_training.model_type
       - model_training.logistic_regression.C
@@ -33,22 +32,22 @@ stages:
       - model_training.svc.C
       - model_training.svc.kernel
     outs:
-      - local_S3/models/trained_model.pkl
+      - local_Storage/models/trained_model.pkl
 
   model_evaluation:
     cmd : python -m src.model_evaluation
     deps : 
       - src/model_evaluation.py
-      - local_S3/models/trained_model.pkl
-      - local_S3/data/processed/test.csv
+      - local_Storage/models/trained_model.pkl
+      - local_Storage/data/processed/test.csv
     params :
       - model_training.model_type
     outs:
-      - local_S3/metrics/metrics.json
-      - local_S3/model_info/model_info.json
+      - local_Storage/metrics/metrics.json
+      - local_Storage/model_info/model_info.json
   
   model_registy:
     cmd: python -m src.model_registry
     deps :
       - src/model_registry.py
-      - local_S3/model_info/model_info.json
+      - local_Storage/model_info/model_info.json

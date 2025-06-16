@@ -6,7 +6,7 @@ logger = get_logger(__name__)
 
 def load_data(data_url:str):
     try:
-        df = pd.read_csv(data_url)
+        df = pd.read_csv(data_url,sep=',')
         logger.info(f'Data loaded from {data_url}')
         return df
     except pd.errors.ParserError as e:
@@ -55,7 +55,7 @@ def save_data(df:pd.DataFrame,destination_path:str):
 
 def main():
     try:
-        df = load_data(data_url='https://github.com/AkHiLdEvGoD/Datasets/blob/main/personality_dataset.csv')
+        df = load_data(data_url='https://raw.githubusercontent.com/AkHiLdEvGoD/Datasets/refs/heads/main/personality_dataset.csv')
         final_df = preprocessing(df)
         save_data(final_df,destination_path='./local_Storage/data')
         logger.info('Data Ingestion Completed')

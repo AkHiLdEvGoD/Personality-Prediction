@@ -71,9 +71,9 @@ def save_model(model,save_path:str):
 def main():
     try:
         params = load_params('./params.yaml')
-        X, y = load_data('./local_S3/data/processed/train.csv')
+        X, y = load_data('./local_Storage/data/processed/train.csv')
         model = train_model(X,y,params)
-        save_model(model, './local_S3/models')
+        save_model(model, './local_Storage/models')
         logger.info('Model training done and model saved')
     except Exception as e:
         logger.error(f"Training pipeline failed: {e}")
