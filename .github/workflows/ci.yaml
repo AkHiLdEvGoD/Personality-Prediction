@@ -46,5 +46,5 @@ jobs:
             env:
               PERSONALITY_TEST: ${{ secrets.PERSONALITY_TEST }}
             run: |
-              dvc pull  
+              dvc pull --force
               dvc repro
