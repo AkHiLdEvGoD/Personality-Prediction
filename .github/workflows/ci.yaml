@@ -30,12 +30,12 @@ jobs:
 
           - name: Install DVC and DagsHub Support
             run: |
-            pip install dvc[http] dagshub
+              pip install "dvc[http]" dagshub
 
           - name: Configure DVC Remote and Pull Data
             env:
               DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-              DAGSHUB_TOKEN: ${{ secrets..PERSONALITY_TEST }}
+              DAGSHUB_TOKEN: ${{ secrets.PERSONALITY_TEST }}
             run: |
               dvc remote modify origin --local auth basic
               dvc remote modify origin --local user $DAGSHUB_USERNAME
