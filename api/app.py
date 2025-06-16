@@ -1,12 +1,13 @@
 from fastapi import FastAPI,HTTPException
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel,Field,computed_field
+from pydantic import BaseModel,Field
 from typing import Annotated
 import joblib
 import pandas as pd
 import mlflow
 import mlflow.pyfunc
 from contextlib import asynccontextmanager
+import numpy as np
 
 class UserInput(BaseModel):
     time_spend_alone : Annotated[int,Field(...,ge=0,le=11,description='Time spend alone by the user (0–11)')]
@@ -68,6 +69,13 @@ async def predict(data:UserInput):
             'Post_frequency':[data.post_frequency],
             'Offline_social_activity' : [offline_social_activity]
         })
+        # print(df.isnull().sum())       # Check for NaNs
+        num_cols = df.select_dtypes(include='number').columns
+        df['Stage_fear'] = df['Stage_fear'].map({True : 'Yes' , False : 'No'})
+        df['Drained_after_socializing'] = df['Drained_after_socializing'].map({True : 'Yes' , False : 'No'})
+        df[num_cols] = df[num_cols].astype(float)
+        
+        print(df.dtypes)
 
         processed_df = preprocessing_pipeline.transform(df)
         pred = model.predict(processed_df)
