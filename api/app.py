@@ -8,6 +8,7 @@ import mlflow
 import mlflow.pyfunc
 from contextlib import asynccontextmanager
 import numpy as np
+import os
 
 class UserInput(BaseModel):
     time_spend_alone : Annotated[int,Field(...,ge=0,le=11,description='Time spend alone by the user (0–11)')]
@@ -18,7 +19,21 @@ class UserInput(BaseModel):
     friends_circle_size : Annotated[int,Field(...,ge=0,le=15,description='Number of close friends (0–15)')]
     post_frequency: Annotated[int,Field(...,ge=0,le=10,description='Social media post frequency (0–10)')] 
     
-mlflow.set_tracking_uri("https://dagshub.com/AkHiLdEvGoD/Personality-Prediction.mlflow")
+# mlflow.set_tracking_uri("https://dagshub.com/AkHiLdEvGoD/Personality-Prediction.mlflow")
+
+dagshub_token = os.getenv("PERSONALITY_TEST")
+if not dagshub_token:
+    raise EnvironmentError("PERSONALITY_TEST environment variable is not set")
+
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+
+dagshub_url = "https://dagshub.com"
+repo_owner = "AkHiLdEvGoD"
+repo_name = "Personality-Prediction"
+
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+
 def get_latest_model_version(model_name):
     client = mlflow.MlflowClient()
     latest = client.get_latest_versions(model_name,stages=['Production'])
