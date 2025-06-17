@@ -63,3 +63,21 @@ jobs:
             env:
               PERSONALITY_TEST: ${{ secrets.PERSONALITY_TEST }}
             run: python -m unittest tests/test_api.py
+
+          - name: Set up Docker Buildx
+            if: success()
+            uses: docker/setup-buildx-action@v2
+
+          - name: Build FastAPI backend Docker image
+            if: success()
+            run: |
+              docker build -f Dockerfile -t fastapi-backend .
+
+          - name: Run and test Docker container (optional)
+            if: success()
+            run: |
+              run: docker run -p 8000:8000 -e PERSONALITY_TEST=${{ secrets.PERSONALITY_TEST }} fastapi-backend
+
+              sleep 5
+              curl --fail http://localhost:8000/health | grep -q '"health":"up"' || exit 1
+              docker stop backend-test && docker rm backend-test
