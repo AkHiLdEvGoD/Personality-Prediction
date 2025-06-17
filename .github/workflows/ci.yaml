@@ -76,8 +76,15 @@ jobs:
           - name: Run and test Docker container (optional)
             if: success()
             run: |
-              docker run -p 8000:8000 -e PERSONALITY_TEST=${{ secrets.PERSONALITY_TEST }} fastapi-backend
+              docker run -d -p 8000:8000 --name backend-test \
+              -e PERSONALITY_TEST=${{ secrets.PERSONALITY_TEST }} \
+              fastapi-backend
 
+              echo "Waiting for server to start..."
               sleep 5
+
+              echo "Running health check..."
               curl --fail http://localhost:8000/health | grep -q '"health":"up"' || exit 1
+
+              echo "Stopping and removing container..."
               docker stop backend-test && docker rm backend-test
