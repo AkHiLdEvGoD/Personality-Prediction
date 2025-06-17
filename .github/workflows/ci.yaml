@@ -46,3 +46,20 @@ jobs:
               PERSONALITY_TEST: ${{ secrets.PERSONALITY_TEST }}
             run: |
               dvc repro
+
+          - name: run model test
+            env:
+              PERSONALITY_TEST: ${{ secrets.PERSONALITY_TEST }}
+            run: python -m unittest tests/test_model.py
+
+          - name: Promote model to production
+            if: success()
+            env:
+              PERSONALITY_TEST: ${{ secrets.PERSONALITY_TEST }}
+            run: python scripts/promote_model.py
+
+          - name: Run Flask app tests
+            if: success()
+            env:
+              PERSONALITY_TEST: ${{ secrets.PERSONALITY_TEST }}
+            run: python -m unittest tests/test_api.py

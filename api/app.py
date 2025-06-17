@@ -21,7 +21,7 @@ class UserInput(BaseModel):
 mlflow.set_tracking_uri("https://dagshub.com/AkHiLdEvGoD/Personality-Prediction.mlflow")
 def get_latest_model_version(model_name):
     client = mlflow.MlflowClient()
-    latest = client.get_latest_versions(model_name,stages=['Staging'])
+    latest = client.get_latest_versions(model_name,stages=['Production'])
     if not latest:
         latest = client.get_latest_versions(model_name,stages=['None'])
     return latest[0].version if latest else None
@@ -37,9 +37,9 @@ async def lifespan(app : FastAPI):
 
     app.state.model = mlflow.pyfunc.load_model(model_uri)
     
-    app.state.label_encoder = joblib.load('./local_S3/models/label_encoder.pkl')
+    app.state.label_encoder = joblib.load('./local_Storage/models/label_encoder.pkl')
 
-    app.state.preprocessing_pipeline = joblib.load('./local_S3/models/preprocessing_pipeline.pkl')
+    app.state.preprocessing_pipeline = joblib.load('./local_Storage/models/preprocessing_pipeline.pkl')
 
     print('Model and encoders loaded')
     yield
