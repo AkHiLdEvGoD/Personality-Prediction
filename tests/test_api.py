@@ -15,13 +15,13 @@ class FastAPITest(unittest.TestCase):
 
     def test_predict_endpoint(self):
         payload = {
-            'Time_spent_Alone': 4.0,
-            'Stage_fear': 'No',
-            'Social_event_attendance': 4.0,
-            'Going_outside': 6.0,
-            'Drained_after_socializing': 'No',
-            'Friends_circle_size': 13.0,
-            'Post_frequency': 5.0
+            'time_spent_Alone': 4,
+            'stage_fear': False,
+            'social_event_attendance': 4,
+            'going_outside': 6,
+            'drained_after_socializing': False,
+            'friends_circle_size': 13,
+            'post_frequency': 5
         }
 
         response = self.client.post("/predict", json=payload)
