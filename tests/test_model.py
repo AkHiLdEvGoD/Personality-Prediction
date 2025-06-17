@@ -40,13 +40,13 @@ class TestModel(unittest.TestCase):
     
     def test_model_signature(self):
         input_df = pd.DataFrame({
-            'Time_spent_Alone' : 4.0,
-            'Stage_fear' : 'No',
-            'Social_event_attendance' : 4.0,
-            'Going_outside':6.0,
-            'Drained_after_socializing': 'No',
-            'Friends_circle_size' : 13.0,
-            'Post_frequency':5.0,
+            'Time_spent_Alone' : [4.0],
+            'Stage_fear' : ['No'],
+            'Social_event_attendance' : [4.0],
+            'Going_outside':[6.0],
+            'Drained_after_socializing': ['No'],
+            'Friends_circle_size' : [13.0],
+            'Post_frequency':[5.0],
         })
         input_df['Offline_social_activity'] = input_df['Social_event_attendance'] * input_df['Going_outside']
 
