@@ -11,7 +11,7 @@ class FastAPITest(unittest.TestCase):
     def test_health_endpoint(self):
         response = self.client.get("/health")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"status": "API is healthy"})
+        self.assertEqual(response.json(), {"status": "up"})
 
     def test_predict_endpoint(self):
         payload = {
