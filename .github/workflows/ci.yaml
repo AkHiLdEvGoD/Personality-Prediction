@@ -76,7 +76,7 @@ jobs:
           - name: Run and test Docker container (optional)
             if: success()
             run: |
-              run: docker run -p 8000:8000 -e PERSONALITY_TEST=${{ secrets.PERSONALITY_TEST }} fastapi-backend
+              docker run -p 8000:8000 -e PERSONALITY_TEST=${{ secrets.PERSONALITY_TEST }} fastapi-backend
 
               sleep 5
               curl --fail http://localhost:8000/health | grep -q '"health":"up"' || exit 1
