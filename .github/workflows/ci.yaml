@@ -84,7 +84,7 @@ jobs:
               sleep 15
 
               echo "Running health check..."
-              curl --fail http://localhost:8000/health | grep -q '"health":"up"' || exit 1
+              curl --fail http://localhost:8000/health | grep -q '"status":"up"' || exit 1
 
               echo "Stopping and removing container..."
               docker stop backend-test && docker rm backend-test
