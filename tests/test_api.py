@@ -4,14 +4,11 @@ from fastapi.testclient import TestClient
 
 class FastAPITest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.client = TestClient(app)
-
     def test_health_endpoint(self):
-        response = self.client.get("/health")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"status": "up"})
+        with TestClient(app) as client:
+            response = client.get("/health")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json(), {"status": "up"})
 
     def test_predict_endpoint(self):
         payload = {
@@ -24,9 +21,10 @@ class FastAPITest(unittest.TestCase):
             'post_frequency': 5
         }
 
-        response = self.client.post("/predict", json=payload)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("prediction", response.json())
+        with TestClient(app) as client:
+            response = client.post("/predict", json=payload)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("Predicted Personality", response.json())
 
 if __name__ == "__main__":
     unittest.main()
