@@ -15,7 +15,7 @@ class FastAPITest(unittest.TestCase):
 
     def test_predict_endpoint(self):
         payload = {
-            'time_spent_alone': 4,
+            'time_spend_alone': 4,
             'stage_fear': False,
             'social_event_attendance': 4,
             'going_outside': 6,
